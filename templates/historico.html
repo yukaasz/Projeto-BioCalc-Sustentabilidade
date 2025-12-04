@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Histórico - BioCalc</title>
+</head>
+<body>
+    <h1>📋 Histórico de Cálculos</h1>
+    
+    {% if calculos %}
+        <p>Total de cálculos: {{ total }}</p>
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Data/Hora</th>
+                <th>Biomassa</th>
+                <th>Método</th>
+            </tr>
+            {% for calc in calculos %}
+            <tr>
+                <td>{{ calc.id }}</td>
+                <td>{{ calc.data }}</td>
+                <td>{{ calc.biomassa }}</td>
+                <td>{{ calc.metodo }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Nenhum cálculo encontrado.</p>
+    {% endif %}
+    
+    <p><a href="/">← Voltar</a></p>
+</body>
+</html>

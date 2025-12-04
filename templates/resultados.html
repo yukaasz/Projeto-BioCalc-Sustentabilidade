@@ -1,175 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados - BioCalc</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .resultado { background: #e8f5e9; padding: 20px; border-radius: 10px; }
+        .alert { background: #fff3cd; padding: 15px; border-radius: 5px; }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <header class="mb-4">
-            <h2>📊 Resultados do Cálculo</h2>
-            <a href="/" class="btn btn-outline-primary btn-sm">← Novo Cálculo</a>
-        </header>
-
-        <div class="row">
-            <!-- Card de Resultados -->
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5>Resultados Principais</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-success">
-                            <h4>Intensidade de Carbono</h4>
-                            <h1 class="display-4">
-                                {{ resultados.intensidade_carbono }} 
-                                <small class="fs-6">{{ resultados.unidades.intensidade }}</small>
-                            </h1>
-                            <hr>
-                            <h4>CBIOs Estimados</h4>
-                            <h1 class="display-4">
-                                {{ resultados.cbios }} 
-                                <small class="fs-6">{{ resultados.unidades.cbios }}</small>
-                            </h1>
-                        </div>
-                        
-                        {% if resultados.dados_entrada.metodo_acv in ['CFF', 'Zero-Burden'] %}
-                        <div class="alert alert-warning">
-                            ⚠️ <strong>Atenção:</strong> 
-                            O método {{ resultados.dados_entrada.metodo_acv }} não é reconhecido pelo RenovaBio 
-                            para certificação oficial de CBIOs. Este resultado é apenas para fins de pesquisa.
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gráfico -->
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h5>Visualização</h5>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="graficoResultados" width="400" height="300"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dados de Entrada -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Dados de Entrada</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <table class="table table-sm">
-                            <tr>
-                                <th>Biomassa:</th>
-                                <td>{{ resultados.dados_entrada.biomassa }}</td>
-                            </tr>
-                            <tr>
-                                <th>Quantidade:</th>
-                                <td>{{ resultados.dados_entrada.quantidade }} ton/ano</td>
-                            </tr>
-                            <tr>
-                                <th>Modal Transporte:</th>
-                                <td>{{ resultados.dados_entrada.transporte_modal }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <table class="table table-sm">
-                            <tr>
-                                <th>Distância:</th>
-                                <td>{{ resultados.dados_entrada.transporte_distancia }} km</td>
-                            </tr>
-                            <tr>
-                                <th>Energia Elétrica:</th>
-                                <td>{{ resultados.dados_entrada.energia_eletrica }} MWh/ano</td>
-                            </tr>
-                            <tr>
-                                <th>Método ACV:</th>
-                                <td>{{ resultados.dados_entrada.metodo_acv }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ações -->
-        <div class="card">
-            <div class="card-body">
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                    <a href="/" class="btn btn-primary me-2">🔄 Novo Cálculo</a>
-                    <button onclick="exportarPDF()" class="btn btn-success me-2">📄 Exportar PDF</button>
-                    <a href="/historico" class="btn btn-secondary">📋 Histórico</a>
-                </div>
-            </div>
-        </div>
+    <h1>📊 Resultados do Cálculo</h1>
+    
+    <div class="resultado">
+        <h2>Intensidade de Carbono: {{ resultados.intensidade_carbono }} gCO₂eq/MJ</h2>
+        <h2>CBIOs Estimados: {{ resultados.cbios }} CBIOs/ano</h2>
     </div>
-
-    <script>
-        // Configuração do gráfico
-        const ctx = document.getElementById('graficoResultados').getContext('2d');
-        const intensidade = {{ resultados.intensidade_carbono }};
-        const referencia = 83.8; // Referência fóssil
-        
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['BioCombustível', 'Referência Fóssil'],
-                datasets: [{
-                    label: 'Intensidade de Carbono (gCO₂eq/MJ)',
-                    data: [intensidade, referencia],
-                    backgroundColor: [
-                        intensidade < referencia ? 'rgba(75, 192, 192, 0.8)' : 'rgba(255, 99, 132, 0.8)',
-                        'rgba(201, 203, 207, 0.8)'
-                    ],
-                    borderColor: [
-                        intensidade < referencia ? 'rgb(75, 192, 192)' : 'rgb(255, 99, 132)',
-                        'rgb(201, 203, 207)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'gCO₂eq/MJ'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Função para exportar PDF (simulada)
-        function exportarPDF() {
-            alert('Funcionalidade de exportação PDF será implementada na próxima versão!');
-            // Implementação futura com jsPDF
-        }
-    </script>
+    
+    <h3>Detalhes:</h3>
+    <ul>
+        <li><strong>Biomassa:</strong> {{ resultados.dados_entrada.biomassa }}</li>
+        <li><strong>Quantidade:</strong> {{ resultados.dados_entrada.quantidade }} ton/ano</li>
+        <li><strong>Método ACV:</strong> {{ resultados.dados_entrada.metodo_acv }}</li>
+    </ul>
+    
+    {% if resultados.dados_entrada.metodo_acv in ['CFF', 'Zero-Burden'] %}
+    <div class="alert">
+        ⚠️ <strong>Atenção:</strong> Método {{ resultados.dados_entrada.metodo_acv }} 
+        não é reconhecido pelo RenovaBio para certificação oficial.
+    </div>
+    {% endif %}
+    
+    <p><a href="/">← Novo Cálculo</a> | <a href="/historico">📋 Ver Histórico</a></p>
 </body>
 </html>
