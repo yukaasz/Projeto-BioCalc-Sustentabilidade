@@ -2,32 +2,53 @@
 <html>
 <head>
     <title>Histórico - BioCalc</title>
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <h1>📋 Histórico de Cálculos</h1>
-    
-    {% if calculos %}
-        <p>Total de cálculos: {{ total }}</p>
-        <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Data/Hora</th>
-                <th>Biomassa</th>
-                <th>Método</th>
-            </tr>
-            {% for calc in calculos %}
-            <tr>
-                <td>{{ calc.id }}</td>
-                <td>{{ calc.data }}</td>
-                <td>{{ calc.biomassa }}</td>
-                <td>{{ calc.metodo }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>Nenhum cálculo encontrado.</p>
-    {% endif %}
-    
-    <p><a href="/">← Voltar</a></p>
+    <div class="container container-wide">
+        <div class="header-logo" style="text-align: left;">
+            <h1>📋 Histórico de Cálculos</h1>
+            {% if calculos %}
+                <div class="subtitle">Total de registros: {{ total }}</div>
+            {% endif %}
+        </div>
+        
+        {% if calculos %}
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Data/Hora</th>
+                            <th>Biomassa</th>
+                            <th>Método</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for calc in calculos %}
+                        <tr>
+                            <td>#{{ calc.id }}</td>
+                            <td>{{ calc.data }}</td>
+                            <td>{{ calc.biomassa }}</td>
+                            <td>
+                                <span style="background: #f1f8e9; padding: 4px 8px; border-radius: 4px; color: #2e7d32; font-size: 0.85rem; font-weight: bold;">
+                                    {{ calc.metodo }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="text-align: center; padding: 40px; color: #777;">
+                Nenhum cálculo encontrado no banco de dados.
+            </p>
+        {% endif %}
+        
+        <div class="footer-nav">
+            <a href="/">← Voltar para Início</a>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,61 +1,215 @@
-/* Estilos básicos para a BioCalc */
+/* style.css - Tema "Clean Card" (Igual às imagens) */
+
 :root {
-    --primary-color: #2e7d32;
-    --secondary-color: #4caf50;
-    --accent-color: #8bc34a;
+    --primary-green: #2e7d32;     /* Verde escuro do botão/títulos */
+    --light-green-bg: #e8f5e9;    /* Fundo verde claro do resultado */
+    --text-dark-green: #1b5e20;   /* Texto escuro dentro do verde claro */
+    --bg-page: #f8f9fa;           /* Fundo cinza claro da página inteira */
+    --border-color: #e0e0e0;      /* Bordas sutis */
+    --warning-bg: #fff3e0;        /* Fundo do alerta amarelo */
+    --warning-text: #e65100;      /* Texto do alerta */
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-page);
+    color: #333;
+    margin: 0;
+    padding: 20px;       /* Pode reduzir o padding se quiser */
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* <--- ADICIONE ESTA LINHA */
+    min-height: 100vh;
 }
 
-.card {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: none;
-    margin-bottom: 20px;
+/* O "Cartão" Branco */
+.container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 500px; /* Largura padrão para o formulário */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Sombra suave */
+    height: fit-content;
 }
 
-.card-header {
+/* Classe para deixar o container mais largo (Resultados e Histórico) */
+.container-wide {
+    max-width: 1200px;
+}
+
+/* --- Cabeçalho e Títulos --- */
+.header-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: var(--primary-green);
+    font-size: 1.8rem;
+    margin: 0;
     font-weight: 600;
 }
 
-.form-label {
+h2 { font-size: 1.5rem; margin: 0 0 10px 0; }
+h3 { font-size: 1.1rem; color: #666; margin-top: 0; }
+
+.subtitle {
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* --- Formulários --- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
     font-weight: 500;
-    color: #333;
+    color: #444;
+    font-size: 0.95rem;
 }
 
-.form-control:focus, .form-select:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 0.25rem rgba(139, 195, 74, 0.25);
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: #fff;
+    transition: border 0.3s;
 }
 
-.btn-success {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-green);
 }
 
-.btn-success:hover {
+/* Botão Verde Sólido */
+button.btn-primary {
+    width: 100%;
+    background-color: var(--primary-green);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+button.btn-primary:hover {
     background-color: #1b5e20;
-    border-color: #1b5e20;
 }
 
-.alert {
+/* --- Página de Resultados (Layout Lado a Lado) --- */
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+    gap: 30px;
+    margin-top: 20px;
+    align-items: start;
+}
+
+/* Caixa Grande Verde (Esquerda) */
+.big-result-card {
+    background-color: var(--light-green-bg);
+    padding: 30px;
     border-radius: 8px;
+    text-align: center;
+    color: var(--text-dark-green);
+    border: 1px solid #c8e6c9;
 }
 
-#graficoResultados {
-    max-height: 300px;
+.big-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: block;
+    margin: 10px 0;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    .container {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-    
-    h1.display-4 {
-        font-size: 2.5rem;
-    }
+.unit { font-size: 1rem; font-weight: normal; opacity: 0.8; }
+.divider { margin: 20px 0; border-top: 1px solid rgba(0,0,0,0.1); }
+
+/* Lista de Detalhes (Direita) */
+.details-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.details-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+.details-list strong { color: #333; }
+
+/* Alerta Amarelo */
+.alert-box {
+    background-color: var(--warning-bg);
+    color: var(--warning-text);
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    border-left: 4px solid #ff9800;
+}
+
+/* --- Tabela Histórico --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+}
+
+th {
+    background-color: var(--light-green-bg);
+    color: var(--text-dark-green);
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    border-bottom: 2px solid #c8e6c9;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    color: #555;
+}
+
+tr:last-child td { border-bottom: none; }
+
+/* Rodapé com links */
+.footer-nav {
+    margin-top: 30px;
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.footer-nav a {
+    color: var(--primary-green);
+    text-decoration: none;
+    margin-left: 15px;
+    font-weight: 500;
+}
+
+.footer-nav a:hover { text-decoration: underline; }
+
+/* Responsividade (Celular) */
+@media (max-width: 700px) {
+    .results-grid { grid-template-columns: 1fr; } /* Vira uma coluna só no celular */
+    .container, .container-wide { padding: 20px; }
 }

@@ -9,18 +9,18 @@ import json
 # 🔹 IMPORT correto - SÓ importe o que existe
 try:
     from database import init_db, db, Calculo
-    print("✅ Imports do database OK!")
+    print("Imports do database OK!")
 except ImportError as e:
-    print(f"❌ Erro nos imports: {e}")
+    print(f"Erro nos imports: {e}")
     print("Verifique se database.py existe e tem db, init_db, Calculo")
     exit(1)
 
 # Import dos cálculos
 try:
     from calculos import calcular_intensidade_carbono, calcular_cbios
-    print("✅ Imports dos cálculos OK!")
+    print("Imports dos cálculos OK!")
 except ImportError:
-    print("❌ calculos.py não encontrado. Criando versão simples...")
+    print("calculos.py não encontrado. Criando versão simples...")
     # Cria funções simples se o arquivo não existir
     def calcular_intensidade_carbono(dados):
         return 25.0  # Valor fixo para teste
@@ -35,12 +35,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///biocalc.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 🔹 INICIALIZAR o banco
-print("🔄 Inicializando banco de dados...")
+print("Inicializando banco de dados...")
 try:
     init_db(app)
-    print("✅ Banco inicializado com sucesso!")
+    print("Banco inicializado com sucesso!")
 except Exception as e:
-    print(f"❌ Erro ao inicializar banco: {e}")
+    print(f"Erro ao inicializar banco: {e}")
 
 # 🔹 ROTAS
 @app.route('/')
@@ -88,14 +88,14 @@ def calcular():
         
         db.session.add(novo_calculo)
         db.session.commit()
-        print(f"✅ Cálculo #{novo_calculo.id} salvo no banco!")
+        print(f"Cálculo #{novo_calculo.id} salvo no banco!")
         
         # Mostrar resultados
         return render_template('resultados.html', resultados=resultados)
         
     except Exception as e:
         error_msg = f"Erro: {str(e)}"
-        print(f"❌ {error_msg}")
+        print(f"{error_msg}")
         return error_msg, 400
 
 @app.route('/historico')
@@ -125,7 +125,7 @@ def teste():
     """Página de teste"""
     return """
     <h1>BioCalc - Teste</h1>
-    <p>Aplicação está funcionando! ✅</p>
+    <p>Aplicação está funcionando!</p>
     <p><a href="/">Ir para o formulário</a></p>
     <p><a href="/historico">Ver histórico</a></p>
     """
@@ -133,11 +133,11 @@ def teste():
 # 🔹 EXECUTAR
 if __name__ == '__main__':
     print("\n" + "="*50)
-    print("🚀 BIO-CALC INICIANDO")
+    print("BIO-CALC INICIANDO")
     print("="*50)
-    print(f"📁 Banco: {app.config['SQLALCHEMY_DATABASE_URI']}")
-    print(f"🌐 URL: http://localhost:5000")
-    print(f"🌐 URL: http://127.0.0.1:5000")
+    print(f"Banco: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    print(f"URL: http://localhost:5000")
+    print(f"URL: http://127.0.0.1:5000")
     print("="*50 + "\n")
     
     app.run(debug=True, port=5000)

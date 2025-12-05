@@ -40,3 +40,22 @@ O sistema calcula a pegada de carbono e estima créditos de descarbonização (C
 ### Banco de Dados
 - SQLite
 - Flask-SQLAlchemy
+
+## Como Executar
+
+Após clonar o repositório, seguir os seguintes passos: 
+
+### 1. Instalar dependências
+No termina execute:
+`pip install -r requirements.txt`
+
+### 3. Executar o sistema
+No terminal, execute:
+`python app.py`
+
+### 4. Acessar
+Abra o navegador neste endereço:
+`http://127.0.0.1:5000`
+
+### Encerrar
+Para encerrar o servidor, pressione `Ctrl + C` no terminal.

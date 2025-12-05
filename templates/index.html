@@ -2,45 +2,46 @@
 <html>
 <head>
     <title>BioCalc</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        .form-group { margin: 10px 0; }
-        label { display: block; margin: 5px 0; }
-        input, select { padding: 8px; width: 300px; }
-        button { background: green; color: white; padding: 10px 20px; border: none; }
-    </style>
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <h1>🌿 BioCalc - Calculadora de Carbono</h1>
-    
-    <form method="POST" action="/calcular">
-        <div class="form-group">
-            <label>Biomassa:</label>
-            <select name="biomassa">
-                <option value="casca_amendoim">Casca de Amendoim</option>
-                <option value="residuos_madeira">Resíduos de Madeira</option>
-                <option value="eucalipto">Eucalipto</option>
-                <option value="pinus">Pinus</option>
-            </select>
+    <div class="container">
+        <div class="header-logo">
+            <h1>🌿 BioCalc</h1>
+            <div class="subtitle">Calculadora de Carbono</div>
         </div>
         
-        <div class="form-group">
-            <label>Quantidade (ton/ano):</label>
-            <input type="number" name="quantidade" value="100" step="0.1">
-        </div>
+        <form method="POST" action="/calcular">
+            <div class="form-group">
+                <label>Tipo de Biomassa:</label>
+                <select name="biomassa">
+                    <option value="casca_amendoim">Casca de Amendoim</option>
+                    <option value="residuos_madeira">Resíduos de Madeira</option>
+                    <option value="eucalipto">Eucalipto</option>
+                    <option value="pinus">Pinus</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Quantidade (ton/ano):</label>
+                <input type="number" name="quantidade" value="100" step="0.1">
+            </div>
+            
+            <div class="form-group">
+                <label>Método ACV:</label>
+                <select name="metodo_acv">
+                    <option value="IPCC">ACV Padrão (IPCC)</option>
+                    <option value="CFF">Circular Footprint Formula</option>
+                    <option value="Zero-Burden">Zero-Burden</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn-primary">🧮 Calcular Impacto</button>
+        </form>
         
-        <div class="form-group">
-            <label>Método ACV:</label>
-            <select name="metodo_acv">
-                <option value="IPCC">ACV Padrão (IPCC)</option>
-                <option value="CFF">Circular Footprint Formula</option>
-                <option value="Zero-Burden">Zero-Burden</option>
-            </select>
+        <div class="footer-nav" style="text-align: center;">
+            <a href="/historico">📋 Ver Histórico</a> | <a href="/teste">🧪 Testar</a>
         </div>
-        
-        <button type="submit">🧮 Calcular</button>
-    </form>
-    
-    <p><a href="/historico">📋 Ver Histórico</a> | <a href="/teste">🧪 Testar</a></p>
+    </div>
 </body>
 </html>
