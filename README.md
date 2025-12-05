@@ -46,7 +46,7 @@ O sistema calcula a pegada de carbono e estima créditos de descarbonização (C
 Após clonar o repositório, seguir os seguintes passos: 
 
 ### 1. Instalar dependências
-No termina execute:
+No terminal, execute:
 `pip install -r requirements.txt`
 
 ### 3. Executar o sistema
