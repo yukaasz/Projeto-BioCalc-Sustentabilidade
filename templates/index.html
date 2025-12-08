@@ -1,47 +1,666 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BioCalc</title>
+    <title>BioCalc - Calculadora de Carbono</title>
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container container-wide">
         <div class="header-logo">
-            <h1>🌿 BioCalc</h1>
-            <div class="subtitle">Calculadora de Carbono</div>
+            <h1>🌿 BioCalc 2.0</h1>
+            <div class="subtitle">Calculadora de Intensidade de Carbono para Biocombustíveis Sólidos</div>
+            <div class="subtitle">Baseado na planilha Excel original - Implementação completa</div>
         </div>
         
-        <form method="POST" action="/calcular">
-            <div class="form-group">
-                <label>Tipo de Biomassa:</label>
-                <select name="biomassa">
-                    <option value="casca_amendoim">Casca de Amendoim</option>
-                    <option value="residuos_madeira">Resíduos de Madeira</option>
-                    <option value="eucalipto">Eucalipto</option>
-                    <option value="pinus">Pinus</option>
-                </select>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="form-tabs">
+            <button type="button" class="tab-button active" data-tab="tab-geral">🔧 Geral</button>
+            <button type="button" class="tab-button" data-tab="tab-agricola">🌱 Agrícola</button>
+            <button type="button" class="tab-button" data-tab="tab-industrial">🏭 Industrial</button>
+            <button type="button" class="tab-button" data-tab="tab-distribuicao">🚚 Distribuição</button>
+            <button type="button" class="tab-button" data-tab="tab-config">⚙️ Configurações</button>
+        </div>
+        
+        <form method="POST" action="/calcular" id="biocalc-form">
+            
+            <!-- ABA 1: DADOS GERAIS -->
+            <div class="tab-content active" id="tab-geral">
+                <div class="form-section">
+                    <h3>Informações Gerais</h3>
+                    
+                    <div class="field-group">
+                        <label class="required">Tipo de Biomassa:</label>
+                        <select name="biomassa" required>
+                            <option value="">Selecione...</option>
+                            {% for biomassa in biomassas %}
+                            <option value="{{ biomassa.id }}">{{ biomassa.nome }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="help-text">Escolha o tipo de biomassa utilizada para produção do biocombustível</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">Quantidade de Biomassa:</label>
+                            <input type="number" name="quantidade_biomassa" 
+                                   value="{{ default_values.quantidade_biomassa }}" 
+                                   step="0.1" min="0" required>
+                            <div class="help-text">Toneladas por ano</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label class="required">Aproveitamento da Biomassa:</label>
+                            <input type="number" name="aproveitamento_biomassa" 
+                                   value="{{ default_values.aproveitamento_biomassa }}" 
+                                   step="0.01" min="0.1" required>
+                            <div class="help-text">kg de biomassa / kg de biocombustível</div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Possui informação específica sobre consumo de biomassa?</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="possui_info_consumo" value="Sim" data-show="info-especifica">
+                                Sim
+                            </label>
+                            <label>
+                                <input type="radio" name="possui_info_consumo" value="Não" checked data-hide="info-especifica">
+                                Não (usar padrão)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group" id="info-especifica" style="display: none;">
+                        <label>Entrada específica de biomassa:</label>
+                        <input type="number" name="entrada_especifica_biomassa" step="0.001" min="0">
+                        <div class="help-text">kg de biomassa / kg de biocombustível (opcional)</div>
+                    </div>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label>Quantidade (ton/ano):</label>
-                <input type="number" name="quantidade" value="100" step="0.1">
+            <!-- ABA 2: FASE AGRÍCOLA -->
+            <div class="tab-content" id="tab-agricola">
+                <div class="form-section">
+                    <h3>Produção de Biomassa e MUT</h3>
+                    
+                    <div class="field-group">
+                        <label class="required">Estado de Produção da Biomassa:</label>
+                        <select name="estado_producao" required>
+                            <option value="">Selecione...</option>
+                            {% for estado in estados %}
+                            <option value="{{ estado.lower().replace(' ', '_').replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u') }}">{{ estado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Etapa do Ciclo de Vida (para resíduos de madeira):</label>
+                        <select name="etapa_ciclo_vida">
+                            <option value="nao_aplica">Não se aplica</option>
+                            <option value="residuos_galhos_folhas">Resíduos de galhos e folhas</option>
+                            <option value="residuos_casca">Resíduos de casca</option>
+                            <option value="residuo_serragem">Resíduo de serragem</option>
+                            <option value="nao_especificado">Não especificado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Entrada de Amido de Milho:</label>
+                            <input type="number" name="entrada_amido_milho" value="0" step="0.001" min="0">
+                            <div class="help-text">kg / kg de biocombustível</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Percentual de Alocação MUT:</label>
+                            <input type="number" name="percentual_alocacao_mut" value="0.325" step="0.001" min="0" max="1">
+                            <div class="help-text">% de alocação para a biomassa (0-1)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Transporte da Biomassa até a Fábrica</h3>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">Distância de Transporte:</label>
+                            <input type="number" name="distancia_transporte_biomassa" 
+                                   value="{{ default_values.distancia_transporte_biomassa }}" 
+                                   step="1" min="0" required>
+                            <div class="help-text">km</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label class="required">Tipo de Veículo:</label>
+                            <select name="tipo_veiculo_transporte" required>
+                                <option value="">Selecione...</option>
+                                {% for veiculo in veiculos %}
+                                <option value="{{ veiculo.id }}">{{ veiculo.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Quantidade Média Transportada por Veículo:</label>
+                        <input type="number" name="quantidade_media_transportada_ton" 
+                               value="{{ default_values.quantidade_media_transportada_ton }}" 
+                               step="0.1" min="0">
+                        <div class="help-text">toneladas</div>
+                    </div>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label>Método ACV:</label>
-                <select name="metodo_acv">
-                    <option value="IPCC">ACV Padrão (IPCC)</option>
-                    <option value="CFF">Circular Footprint Formula</option>
-                    <option value="Zero-Burden">Zero-Burden</option>
-                </select>
+            <!-- ABA 3: FASE INDUSTRIAL -->
+            <div class="tab-content" id="tab-industrial">
+                <div class="form-section">
+                    <h3>Dados do Sistema Industrial</h3>
+                    
+                    <div class="field-group">
+                        <label class="required">Quantidade de Biomassa Processada:</label>
+                        <input type="number" name="quantidade_biomassa_processada_kg" 
+                               value="{{ default_values.quantidade_biomassa_processada_kg }}" 
+                               step="1000" min="0" required>
+                        <div class="help-text">kg/ano (não considerar biomassa usada na co-geração)</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Existe Co-geração de Energia?</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="co_geracao" value="Sim" data-show="co-geracao-dados">
+                                Sim
+                            </label>
+                            <label>
+                                <input type="radio" name="co_geracao" value="Não" checked data-hide="co-geracao-dados">
+                                Não
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group" id="co-geracao-dados" style="display: none;">
+                        <label>Quantidade de Biomassa Consumida na Co-geração:</label>
+                        <input type="number" name="biomassa_co_geracao_kg" value="0" step="1000" min="0">
+                        <div class="help-text">kg/ano</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Energia Elétrica (kWh/ano)</h3>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Eletricidade da Rede - Mix Média Voltagem:</label>
+                            <input type="number" name="eletricidade_rede_media_kwh" value="0" step="1" min="0">
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Eletricidade da Rede - Mix Alta Voltagem:</label>
+                            <input type="number" name="eletricidade_rede_alta_kwh" value="0" step="1" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Eletricidade - PCH (Pequena Central Hidrelétrica):</label>
+                            <input type="number" name="eletricidade_pch_kwh" value="0" step="1" min="0">
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Eletricidade - Biomassa:</label>
+                            <input type="number" name="eletricidade_biomassa_kwh" value="0" step="1" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Eletricidade - Eólica:</label>
+                            <input type="number" name="eletricidade_eolica_kwh" value="0" step="1" min="0">
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Eletricidade - Solar:</label>
+                            <input type="number" name="eletricidade_solar_kwh" value="0" step="1" min="0">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Combustíveis (Consumo Anual)</h3>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Diesel:</label>
+                            <input type="number" name="diesel_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">litros/ano</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Gás Natural:</label>
+                            <input type="number" name="gas_natural_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">Nm³/ano</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>GLP:</label>
+                            <input type="number" name="glp_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">kg/ano</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Gasolina A:</label>
+                            <input type="number" name="gasolina_a_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">litros/ano</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Etanol Anidro:</label>
+                            <input type="number" name="etanol_anidro_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">litros/ano</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Etanol Hidratado:</label>
+                            <input type="number" name="etanol_hidratado_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">litros/ano</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Cavaco de Madeira:</label>
+                            <input type="number" name="cavaco_madeira_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">kg/ano</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Lenha:</label>
+                            <input type="number" name="lenha_consumo" value="0" step="0.1" min="0">
+                            <div class="help-text">kg/ano</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Insumos Industriais (Consumo Anual)</h3>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Água:</label>
+                            <input type="number" name="agua_litros" value="0" step="1000" min="0">
+                            <div class="help-text">litros/ano</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Óleo Lubrificante:</label>
+                            <input type="number" name="oleo_lubrificante_kg" value="0" step="0.1" min="0">
+                            <div class="help-text">kg/ano</div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Areia de Sílica:</label>
+                        <input type="number" name="areia_silica_kg" value="0" step="0.1" min="0">
+                        <div class="help-text">kg/ano</div>
+                    </div>
+                </div>
             </div>
             
-            <button type="submit" class="btn-primary">🧮 Calcular Impacto</button>
+            <!-- ABA 4: FASE DISTRIBUIÇÃO -->
+            <div class="tab-content" id="tab-distribuicao">
+                <div class="form-section">
+                    <h3>Mercado Doméstico</h3>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="required">Quantidade de Biocombustível Distribuído:</label>
+                            <input type="number" name="quantidade_biocombustivel_distribuicao_ton" 
+                                   value="{{ default_values.quantidade_biocombustivel_distribuicao_ton }}" 
+                                   step="0.1" min="0" required>
+                            <div class="help-text">toneladas/ano</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label class="required">Distância até o Mercado Consumidor:</label>
+                            <input type="number" name="distancia_mercado_domestico_km" 
+                                   value="{{ default_values.distancia_mercado_domestico_km }}" 
+                                   step="1" min="0" required>
+                            <div class="help-text">km</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label>Percentual Ferroviário:</label>
+                            <input type="number" name="percentual_ferroviario" value="0" step="0.1" min="0" max="100">
+                            <div class="help-text">% (0-100)</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Percentual Hidroviário:</label>
+                            <input type="number" name="percentual_hidroviario" value="0" step="0.1" min="0" max="100">
+                            <div class="help-text">% (0-100)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Percentual Rodoviário:</label>
+                        <input type="number" name="percentual_rodoviario" value="100" step="0.1" min="0" max="100">
+                        <div class="help-text">% (será calculado automaticamente se deixar 100)</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Tipo de Veículo Rodoviário:</label>
+                        <select name="tipo_veiculo_rodoviario">
+                            <option value="">Selecione...</option>
+                            {% for veiculo in veiculos %}
+                            <option value="{{ veiculo.id }}">{{ veiculo.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Exportação</h3>
+                    
+                    <div class="field-group">
+                        <label>Exporta o Biocombustível?</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="exportacao" value="Sim" data-show="exportacao-dados">
+                                Sim
+                            </label>
+                            <label>
+                                <input type="radio" name="exportacao" value="Não" checked data-hide="exportacao-dados">
+                                Não
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="exportacao-dados" style="display: none;">
+                        <div class="form-row">
+                            <div class="field-group">
+                                <label>Quantidade Exportada:</label>
+                                <input type="number" name="quantidade_biocombustivel_exportado_ton" value="0" step="0.1" min="0">
+                                <div class="help-text">toneladas/ano</div>
+                            </div>
+                            
+                            <div class="field-group">
+                                <label>Distância da Fábrica ao Porto:</label>
+                                <input type="number" name="distancia_fabrica_porto_km" value="410" step="1" min="0">
+                                <div class="help-text">km</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="field-group">
+                                <label>Distância do Porto ao Destino:</label>
+                                <input type="number" name="distancia_porto_destino_km" value="10015.23" step="1" min="0">
+                                <div class="help-text">km (consulte em searates.com)</div>
+                            </div>
+                            
+                            <div class="field-group">
+                                <label>Tipo de Veículo até o Porto:</label>
+                                <select name="tipo_veiculo_porto">
+                                    <option value="">Selecione...</option>
+                                    {% for veiculo in veiculos %}
+                                    <option value="{{ veiculo.id }}">{{ veiculo.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="field-group">
+                                <label>Percentual Ferroviário (até porto):</label>
+                                <input type="number" name="percentual_ferroviario_porto" value="0" step="0.1" min="0" max="100">
+                                <div class="help-text">% (0-100)</div>
+                            </div>
+                            
+                            <div class="field-group">
+                                <label>Percentual Hidroviário (até porto):</label>
+                                <input type="number" name="percentual_hidroviario_porto" value="0" step="0.1" min="0" max="100">
+                                <div class="help-text">% (0-100)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ABA 5: CONFIGURAÇÕES -->
+            <div class="tab-content" id="tab-config">
+                <div class="form-section">
+                    <h3>Configurações do Cálculo</h3>
+                    
+                    <div class="field-group">
+                        <label class="required">Combustível Fóssil Substituto:</label>
+                        <select name="combustivel_fossil_substituto" required>
+                            <option value="media_ponderada" selected>Diesel A, Gasolina A e GNV (Média Ponderada)</option>
+                            <option value="gasolina_a">Gasolina A</option>
+                            <option value="diesel_a">Diesel A</option>
+                            <option value="querosene">Querosene de Aviação</option>
+                            <option value="glp">GLP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="required">Volume de Produção para Cálculo de CBIOs:</label>
+                        <input type="number" name="volume_producao_ton_cbios" 
+                               value="{{ default_values.volume_producao_ton_cbios }}" 
+                               step="0.1" min="0" required>
+                        <div class="help-text">toneladas de biocombustível/ano</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="required">Método ACV:</label>
+                        <select name="metodo_acv" required>
+                            <option value="IPCC" selected>ACV Padrão (IPCC) - Reconhecido pelo RenovaBio</option>
+                            <option value="CFF">Circular Footprint Formula (CFF)</option>
+                            <option value="Zero-Burden">Zero-Burden</option>
+                        </select>
+                        <div class="help-text">Nota: CFF e Zero-Burden não são reconhecidos oficialmente pelo RenovaBio</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Valores Padrão da Planilha</h3>
+                    <p>Os seguintes valores são baseados nos dados padrão da planilha Excel original:</p>
+                    <ul style="font-size: 0.9rem; color: #666;">
+                        <li>Aproveitamento da biomassa: 1.2 kg biomassa/kg biocombustível</li>
+                        <li>Percentual de alocação MUT: 0.325 (32.5%)</li>
+                        <li>Quantidade processada: 12,000,000 kg/ano</li>
+                        <li>Distância de transporte: 100 km</li>
+                        <li>Distância mercado doméstico: 100 km</li>
+                        <li>Distância fábrica-porto: 410 km</li>
+                        <li>Distância porto-destino: 10,015.23 km</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn-outline" id="prevBtn" style="display: none;">
+                    ← Anterior
+                </button>
+                
+                <button type="button" class="btn-outline" id="nextBtn">
+                    Próximo →
+                </button>
+                
+                <button type="submit" class="btn-primary" id="submitBtn" style="display: none;">
+                    🧮 Calcular Impacto Completo
+                </button>
+            </div>
+            
+            <div class="footer-nav" style="text-align: center; margin-top: 30px; font-size: 0.9rem;">
+                <p>Baseado na planilha Excel BioCalc desenvolvida por Silva et al. (2022), Farrapo Jr et al. (2023), Matheus et al. (2024)</p>
+                <p><a href="/sobre">📖 Sobre o projeto</a> | <a href="/historico">📋 Histórico</a> | <a href="/teste">🧪 Testar</a></p>
+            </div>
         </form>
-        
-        <div class="footer-nav" style="text-align: center;">
-            <a href="/historico">📋 Ver Histórico</a> | <a href="/teste">🧪 Testar</a>
-        </div>
     </div>
+    
+    <script>
+        // Sistema de abas
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remover classe active de todas as abas e botões
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Adicionar classe active ao botão clicado e conteúdo correspondente
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+                
+                // Atualizar botões de navegação
+                updateNavigation();
+            });
+        });
+        
+        // Navegação entre abas
+        const tabs = ['tab-geral', 'tab-agricola', 'tab-industrial', 'tab-distribuicao', 'tab-config'];
+        let currentTab = 0;
+        
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentTab < tabs.length - 1) {
+                currentTab++;
+                switchTab(currentTab);
+            }
+        });
+        
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            if (currentTab > 0) {
+                currentTab--;
+                switchTab(currentTab);
+            }
+        });
+        
+        function switchTab(tabIndex) {
+            // Atualizar botões das abas
+            document.querySelectorAll('.tab-button').forEach((btn, index) => {
+                btn.classList.toggle('active', index === tabIndex);
+            });
+            
+            // Atualizar conteúdo das abas
+            document.querySelectorAll('.tab-content').forEach((content, index) => {
+                content.classList.toggle('active', index === tabIndex);
+            });
+            
+            // Atualizar barra de progresso
+            const progress = ((tabIndex + 1) / tabs.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            // Atualizar botões de navegação
+            updateNavigation();
+        }
+        
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Mostrar/ocultar botões baseado na aba atual
+            if (currentTab === 0) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            } else if (currentTab === tabs.length - 1) {
+                prevBtn.style.display = 'inline-block';
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+            } else {
+                prevBtn.style.display = 'inline-block';
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+            
+            // Atualizar texto do botão próximo
+            if (currentTab === tabs.length - 2) {
+                nextBtn.textContent = 'Última etapa →';
+            } else {
+                nextBtn.textContent = 'Próximo →';
+            }
+        }
+        
+        // Controles condicionais (show/hide)
+        document.querySelectorAll('input[type="radio"][data-show], input[type="radio"][data-hide]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    if (this.hasAttribute('data-show')) {
+                        const elementId = this.getAttribute('data-show');
+                        document.getElementById(elementId).style.display = 'block';
+                    }
+                    if (this.hasAttribute('data-hide')) {
+                        const elementId = this.getAttribute('data-hide');
+                        document.getElementById(elementId).style.display = 'none';
+                    }
+                }
+            });
+        });
+        
+        // Validação do formulário antes de enviar
+        document.getElementById('biocalc-form').addEventListener('submit', function(event) {
+            // Validar campos obrigatórios
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
+            let firstInvalidField = null;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#f44336';
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+            
+            if (!isValid) {
+                event.preventDefault();
+                alert('Por favor, preencha todos os campos obrigatórios (marcados com *).');
+                if (firstInvalidField) {
+                    firstInvalidField.focus();
+                }
+            } else {
+                // Mostrar mensagem de processamento
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '⏳ Processando...';
+                submitBtn.disabled = true;
+                
+                // Restaurar após 3 segundos (caso o submit falhe)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            }
+        });
+        
+        // Inicializar
+        updateNavigation();
+        
+        // Preencher valores padrão para teste (remover em produção)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Descomente para preencher automaticamente para testes
+
+            setTimeout(() => {
+                document.querySelector('select[name="biomassa"]').value = 'casca_amendoim';
+                document.querySelector('select[name="estado_producao"]').value = 'sao_paulo';
+                document.querySelector('select[name="tipo_veiculo_transporte"]').value = 'caminhao_16_32t';
+                document.querySelector('select[name="tipo_veiculo_rodoviario"]').value = 'caminhao_16_32t';
+            }, 500);
+            
+        });
+    </script>
 </body>
 </html>

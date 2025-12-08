@@ -2,52 +2,51 @@
 <html>
 <head>
     <title>Histórico - BioCalc</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container container-wide">
-        <div class="header-logo" style="text-align: left;">
+        <div class="header-logo">
             <h1>📋 Histórico de Cálculos</h1>
             {% if calculos %}
-                <div class="subtitle">Total de registros: {{ total }}</div>
+            <div class="subtitle">Total: {{ total }} cálculos</div>
             {% endif %}
         </div>
         
         {% if calculos %}
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Data/Hora</th>
-                            <th>Biomassa</th>
-                            <th>Método</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for calc in calculos %}
-                        <tr>
-                            <td>#{{ calc.id }}</td>
-                            <td>{{ calc.data }}</td>
-                            <td>{{ calc.biomassa }}</td>
-                            <td>
-                                <span style="background: #f1f8e9; padding: 4px 8px; border-radius: 4px; color: #2e7d32; font-size: 0.85rem; font-weight: bold;">
-                                    {{ calc.metodo }}
-                                </span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Biomassa</th>
+                    <th>Método</th>
+                    <th>Intensidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for calc in calculos %}
+                <tr>
+                    <td>#{{ calc.id }}</td>
+                    <td>{{ calc.data.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ calc.biomassa.replace('_', ' ').title() if calc.biomassa else 'N/A' }}</td>
+                    <td>{{ calc.metodo_acv }}</td>
+                    <td>
+                        {% set resultados = calc.resultados|from_json %}
+                        {{ resultados.get('intensidade_carbono_g', 'N/A') }} gCO₂eq/MJ
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% else %}
-            <p style="text-align: center; padding: 40px; color: #777;">
-                Nenhum cálculo encontrado no banco de dados.
-            </p>
+        <p style="text-align: center; padding: 40px; color: #666;">
+            Nenhum cálculo encontrado no histórico.
+        </p>
         {% endif %}
         
         <div class="footer-nav">
-            <a href="/">← Voltar para Início</a>
+            <a href="/">← Voltar para o cálculo</a>
         </div>
     </div>
 </body>

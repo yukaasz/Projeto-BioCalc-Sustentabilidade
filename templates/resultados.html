@@ -2,18 +2,15 @@
 <html>
 <head>
     <title>Resultados - BioCalc</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container container-wide">
-        <div class="header-logo" style="text-align: left; display: flex; align-items: center; justify-content: space-between;">
-            <div>
-                <h1>📊 Resultados</h1>
-                <div class="subtitle">Análise de impacto concluída</div>
-            </div>
-            <div style="font-size: 2rem;">🏭</div>
+        <div class="header-logo">
+            <h1>📊 Resultados do Cálculo</h1>
+            <div class="subtitle">Análise de intensidade de carbono concluída</div>
         </div>
-
+        
         <div class="results-grid">
             <div class="big-result-card">
                 <h3>Intensidade de Carbono</h3>
@@ -25,29 +22,26 @@
                 <h3>CBIOs Estimados</h3>
                 <span class="big-number">{{ resultados.cbios }}</span>
                 <span class="unit">CBIOs/ano</span>
+                
+                <div class="divider"></div>
+                
+                <h3>Nota de Eficiência</h3>
+                <span class="big-number">{{ resultados.nota_eficiencia }}</span>
+                <span class="unit">kg CO₂eq/MJ</span>
             </div>
-
+            
             <div class="details-list">
-                <h3 style="color: #333; margin-bottom: 15px;">Detalhes do Processo:</h3>
+                <h3>Detalhes do Cálculo</h3>
                 <ul>
-                    <li>
-                        <strong>Biomassa:</strong> 
-                        {{ resultados.dados_entrada.biomassa.replace('_', ' ').title() }}
-                    </li>
-                    <li>
-                        <strong>Quantidade:</strong> 
-                        {{ resultados.dados_entrada.quantidade }} ton/ano
-                    </li>
-                    <li>
-                        <strong>Método ACV:</strong> 
-                        {{ resultados.dados_entrada.metodo_acv }}
-                    </li>
+                    <li><strong>Biomassa:</strong> {{ resultados.dados_entrada.biomassa.replace('_', ' ').title() }}</li>
+                    <li><strong>Quantidade:</strong> {{ resultados.dados_entrada.quantidade }} ton/ano</li>
+                    <li><strong>Método ACV:</strong> {{ resultados.dados_entrada.metodo_acv }}</li>
                 </ul>
-
+                
                 {% if resultados.dados_entrada.metodo_acv in ['CFF', 'Zero-Burden'] %}
                 <div class="alert-box">
                     <strong>⚠️ Atenção:</strong> O método {{ resultados.dados_entrada.metodo_acv }} 
-                    não é reconhecido pelo RenovaBio para certificação oficial.
+                    não é reconhecido oficialmente pelo RenovaBio.
                 </div>
                 {% endif %}
             </div>
@@ -55,7 +49,8 @@
         
         <div class="footer-nav">
             <a href="/">← Novo Cálculo</a>
-            <a href="/historico">Ver Histórico →</a>
+            <a href="/historico">📋 Ver Histórico</a>
+            <a href="/sobre">📖 Sobre</a>
         </div>
     </div>
 </body>
