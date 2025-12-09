@@ -111,13 +111,13 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label>Entrada de Amido de Milho:</label>
-                            <input type="number" name="entrada_amido_milho" value="0" step="0.001" min="0">
+                            <input type="number" name="entrada_amido_milho" value="0" step="any" min="0">
                             <div class="help-text">kg / kg de biocombustível</div>
                         </div>
                         
                         <div class="field-group">
                             <label>Percentual de Alocação MUT:</label>
-                            <input type="number" name="percentual_alocacao_mut" value="0.325" step="0.001" min="0" max="1">
+                            <input type="number" name="percentual_alocacao_mut" value="0.325" step="any" min="0" max="1">
                             <div class="help-text">% de alocação para a biomassa (0-1)</div>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
                         <label>Quantidade Média Transportada por Veículo:</label>
                         <input type="number" name="quantidade_media_transportada_ton" 
                                value="{{ default_values.quantidade_media_transportada_ton }}" 
-                               step="0.1" min="0">
+                               step="any" min="0">
                         <div class="help-text">toneladas</div>
                     </div>
                 </div>
@@ -236,13 +236,13 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label>Diesel:</label>
-                            <input type="number" name="diesel_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="diesel_consumo" value="0" step="any" min="0">
                             <div class="help-text">litros/ano</div>
                         </div>
                         
                         <div class="field-group">
                             <label>Gás Natural:</label>
-                            <input type="number" name="gas_natural_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="gas_natural_consumo" value="0" step="any" min="0">
                             <div class="help-text">Nm³/ano</div>
                         </div>
                     </div>
@@ -250,13 +250,13 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label>GLP:</label>
-                            <input type="number" name="glp_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="glp_consumo" value="0" step="any" min="0">
                             <div class="help-text">kg/ano</div>
                         </div>
                         
                         <div class="field-group">
                             <label>Gasolina A:</label>
-                            <input type="number" name="gasolina_a_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="gasolina_a_consumo" value="0" step="any" min="0">
                             <div class="help-text">litros/ano</div>
                         </div>
                     </div>
@@ -264,13 +264,13 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label>Etanol Anidro:</label>
-                            <input type="number" name="etanol_anidro_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="etanol_anidro_consumo" value="0" step="any" min="0">
                             <div class="help-text">litros/ano</div>
                         </div>
                         
                         <div class="field-group">
                             <label>Etanol Hidratado:</label>
-                            <input type="number" name="etanol_hidratado_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="etanol_hidratado_consumo" value="0" step="any" min="0">
                             <div class="help-text">litros/ano</div>
                         </div>
                     </div>
@@ -278,13 +278,13 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label>Cavaco de Madeira:</label>
-                            <input type="number" name="cavaco_madeira_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="cavaco_madeira_consumo" value="0" step="any" min="0">
                             <div class="help-text">kg/ano</div>
                         </div>
                         
                         <div class="field-group">
                             <label>Lenha:</label>
-                            <input type="number" name="lenha_consumo" value="0" step="0.1" min="0">
+                            <input type="number" name="lenha_consumo" value="0" step="any" min="0">
                             <div class="help-text">kg/ano</div>
                         </div>
                     </div>
@@ -302,14 +302,14 @@
                         
                         <div class="field-group">
                             <label>Óleo Lubrificante:</label>
-                            <input type="number" name="oleo_lubrificante_kg" value="0" step="0.1" min="0">
+                            <input type="number" name="oleo_lubrificante_kg" value="0" step="any" min="0">
                             <div class="help-text">kg/ano</div>
                         </div>
                     </div>
                     
                     <div class="field-group">
                         <label>Areia de Sílica:</label>
-                        <input type="number" name="areia_silica_kg" value="0" step="0.1" min="0">
+                        <input type="number" name="areia_silica_kg" value="0" step="any" min="0">
                         <div class="help-text">kg/ano</div>
                     </div>
                 </div>
@@ -341,20 +341,20 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label>Percentual Ferroviário:</label>
-                            <input type="number" name="percentual_ferroviario" value="0" step="0.1" min="0" max="100">
+                            <input type="number" name="percentual_ferroviario" value="0" step="any" min="0" max="100">
                             <div class="help-text">% (0-100)</div>
                         </div>
                         
                         <div class="field-group">
                             <label>Percentual Hidroviário:</label>
-                            <input type="number" name="percentual_hidroviario" value="0" step="0.1" min="0" max="100">
+                            <input type="number" name="percentual_hidroviario" value="0" step="any" min="0" max="100">
                             <div class="help-text">% (0-100)</div>
                         </div>
                     </div>
                     
                     <div class="field-group">
                         <label>Percentual Rodoviário:</label>
-                        <input type="number" name="percentual_rodoviario" value="100" step="0.1" min="0" max="100">
+                        <input type="number" name="percentual_rodoviario" value="100" step="any" min="0" max="100">
                         <div class="help-text">% (será calculado automaticamente se deixar 100)</div>
                     </div>
                     
@@ -390,13 +390,13 @@
                         <div class="form-row">
                             <div class="field-group">
                                 <label>Quantidade Exportada:</label>
-                                <input type="number" name="quantidade_biocombustivel_exportado_ton" value="0" step="0.1" min="0">
+                                <input type="number" name="quantidade_biocombustivel_exportado_ton" value="0" step="any" min="0">
                                 <div class="help-text">toneladas/ano</div>
                             </div>
                             
                             <div class="field-group">
                                 <label>Distância da Fábrica ao Porto:</label>
-                                <input type="number" name="distancia_fabrica_porto_km" value="410" step="1" min="0">
+                                <input type="number" name="distancia_fabrica_porto_km" value="410" step="any" min="0">
                                 <div class="help-text">km</div>
                             </div>
                         </div>
@@ -404,7 +404,7 @@
                         <div class="form-row">
                             <div class="field-group">
                                 <label>Distância do Porto ao Destino:</label>
-                                <input type="number" name="distancia_porto_destino_km" value="10015.23" step="1" min="0">
+                                <input type="number" name="distancia_porto_destino_km" value="10015.23" step="any" min="0">
                                 <div class="help-text">km (consulte em searates.com)</div>
                             </div>
                             
@@ -422,13 +422,13 @@
                         <div class="form-row">
                             <div class="field-group">
                                 <label>Percentual Ferroviário (até porto):</label>
-                                <input type="number" name="percentual_ferroviario_porto" value="0" step="0.1" min="0" max="100">
+                                <input type="number" name="percentual_ferroviario_porto" value="0" step="any" min="0" max="100">
                                 <div class="help-text">% (0-100)</div>
                             </div>
                             
                             <div class="field-group">
                                 <label>Percentual Hidroviário (até porto):</label>
-                                <input type="number" name="percentual_hidroviario_porto" value="0" step="0.1" min="0" max="100">
+                                <input type="number" name="percentual_hidroviario_porto" value="0" step="any" min="0" max="100">
                                 <div class="help-text">% (0-100)</div>
                             </div>
                         </div>
