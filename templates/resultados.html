@@ -1,57 +1,109 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Resultados - BioCalc</title>
+    <title>BioCalc - Resultados</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container container-wide">
+    <div class="container">
         <div class="header-logo">
-            <h1>📊 Resultados do Cálculo</h1>
-            <div class="subtitle">Análise de intensidade de carbono concluída</div>
+            <h1>📊 Resultados da ACV</h1>
+            <p>Análise de Ciclo de Vida do Biocombustível</p>
         </div>
-        
-        <div class="results-grid">
-            <div class="big-result-card">
+
+        <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+            <div class="result-card" style="flex: 1; text-align: center;">
                 <h3>Intensidade de Carbono</h3>
-                <span class="big-number">{{ resultados.intensidade_carbono }}</span>
-                <span class="unit">gCO₂eq/MJ</span>
-                
-                <div class="divider"></div>
-                
-                <h3>CBIOs Estimados</h3>
-                <span class="big-number">{{ resultados.cbios }}</span>
-                <span class="unit">CBIOs/ano</span>
-                
-                <div class="divider"></div>
-                
-                <h3>Nota de Eficiência</h3>
-                <span class="big-number">{{ resultados.nota_eficiencia }}</span>
-                <span class="unit">kg CO₂eq/MJ</span>
+                <div style="font-size: 2.5em; color: #27ae60; font-weight: bold;">
+                    {{ "%.2f"|format(resultados.intensidade_total_g_co2eq_mj) }}
+                </div>
+                <div style="color: #666;">gCO₂eq / MJ</div>
+            </div>
+
+            <div class="result-card" style="flex: 1; text-align: center; border-left-color: #f39c12;">
+                <h3>CBIOs Gerados</h3>
+                <div style="font-size: 2.5em; color: #f39c12; font-weight: bold;">
+                    {{ resultados.cbios }}
+                </div>
+                <div style="color: #666;">créditos estimados</div>
             </div>
             
-            <div class="details-list">
-                <h3>Detalhes do Cálculo</h3>
-                <ul>
-                    <li><strong>Biomassa:</strong> {{ resultados.dados_entrada.biomassa.replace('_', ' ').title() }}</li>
-                    <li><strong>Quantidade:</strong> {{ resultados.dados_entrada.quantidade }} ton/ano</li>
-                    <li><strong>Método ACV:</strong> {{ resultados.dados_entrada.metodo_acv }}</li>
-                </ul>
-                
-                {% if resultados.dados_entrada.metodo_acv in ['CFF', 'Zero-Burden'] %}
-                <div class="alert-box">
-                    <strong>⚠️ Atenção:</strong> O método {{ resultados.dados_entrada.metodo_acv }} 
-                    não é reconhecido oficialmente pelo RenovaBio.
+            <div class="result-card" style="flex: 1; text-align: center; border-left-color: #2980b9;">
+                <h3>Nota de Eficiência</h3>
+                <div style="font-size: 2.5em; color: #2980b9; font-weight: bold;">
+                    {{ "%.2f"|format(resultados.nota_eficiencia) }}
                 </div>
-                {% endif %}
+                <div style="color: #666;">gCO₂eq / MJ (Redução)</div>
             </div>
         </div>
-        
-        <div class="footer-nav">
-            <a href="/">← Novo Cálculo</a>
-            <a href="/historico">📋 Ver Histórico</a>
-            <a href="/sobre">📖 Sobre</a>
+
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <h3>Detalhamento por Fase</h3>
+                <table>
+                    <tr>
+                        <th>Fase</th>
+                        <th>Emissão (gCO₂eq/MJ)</th>
+                    </tr>
+                    <tr>
+                        <td>🌱 Agrícola</td>
+                        <td>{{ "%.4f"|format(resultados.detalhes.agricola) }}</td>
+                    </tr>
+                    <tr>
+                        <td>🏭 Industrial</td>
+                        <td>{{ "%.4f"|format(resultados.detalhes.industrial) }}</td>
+                    </tr>
+                    <tr>
+                        <td>🚚 Transporte & Distribuição</td>
+                        <td>{{ "%.4f"|format(resultados.detalhes.transporte) }}</td>
+                    </tr>
+                    <tr>
+                        <td>🔥 Uso Final</td>
+                        <td>{{ "%.4f"|format(resultados.detalhes.uso) }}</td>
+                    </tr>
+                </table>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #eee; border-radius: 5px;">
+                    <h4>Dados de Entrada:</h4>
+                    <p><strong>Biomassa:</strong> {{ inputs.biomassa }}</p>
+                    <p><strong>Produção:</strong> {{ inputs.volume_producao_ton_cbios }} ton/ano</p>
+                    <p><strong>Dist. Fábrica:</strong> {{ inputs.distancia_transporte_biomassa }} km</p>
+                    <p><strong>Dist. Cliente:</strong> {{ inputs.distancia_mercado_domestico_km }} km</p>
+                </div>
+            </div>
+
+            <div style="flex: 1;">
+                <canvas id="chartImpacto"></canvas>
+            </div>
+        </div>
+
+        <div class="form-actions" style="margin-top: 30px;">
+            <a href="/" class="btn-outline">← Novo Cálculo</a>
+            <a href="/historico" class="btn-primary">Ver Histórico</a>
         </div>
     </div>
+
+    <script>
+        // Configuração do Gráfico
+        const ctx = document.getElementById('chartImpacto').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Fóssil (Referência)', 'Seu Biocombustível'],
+                datasets: [{
+                    label: 'Intensidade de Carbono (gCO₂eq/MJ)',
+                    data: [86.7, {{ resultados.intensidade_total_g_co2eq_mj }}],
+                    backgroundColor: ['#7f8c8d', '#27ae60']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
