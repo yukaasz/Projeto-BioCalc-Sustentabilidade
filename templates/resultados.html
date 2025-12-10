@@ -66,7 +66,7 @@
                 
                 <div style="margin-top: 20px; padding: 15px; background: #eee; border-radius: 5px;">
                     <h4>Dados de Entrada:</h4>
-                    <p><strong>Biomassa:</strong> {{ inputs.biomassa }}</p>
+                    <p><strong>Biomassa:</strong> {{ inputs.biomassa.replace('_', ' ').title() }}</p>
                     <p><strong>Produção:</strong> {{ inputs.volume_producao_ton_cbios }} ton/ano</p>
                     <p><strong>Dist. Fábrica:</strong> {{ inputs.distancia_transporte_biomassa }} km</p>
                     <p><strong>Dist. Cliente:</strong> {{ inputs.distancia_mercado_domestico_km }} km</p>
@@ -84,23 +84,48 @@
         </div>
     </div>
 
-    <script>
+<script>
         // Configuração do Gráfico
         const ctx = document.getElementById('chartImpacto').getContext('2d');
+        
+        // TRUQUE PARA O EDITOR NÃO RECLAMAR:
+        // Colocamos entre aspas "..." para o editor achar que é texto
+        // E usamos Number() para o JavaScript converter de volta para número
+        
+        const valorFossil = Number("{{ resultados.fossil_ref | default(86.7) }}");
+        const valorBio = Number("{{ resultados.intensidade_total_g_co2eq_mj }}");
+
         new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Fóssil (Referência)', 'Seu Biocombustível'],
                 datasets: [{
                     label: 'Intensidade de Carbono (gCO₂eq/MJ)',
-                    data: [86.7, {{ resultados.intensidade_total_g_co2eq_mj }}],
-                    backgroundColor: ['#7f8c8d', '#27ae60']
+                    data: [valorFossil, valorBio],
+                    backgroundColor: ['#7f8c8d', '#27ae60'],
+                    borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true }
+                    y: { 
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'gCO₂eq / MJ'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Comparativo de Emissões'
+                    }
                 }
             }
         });
