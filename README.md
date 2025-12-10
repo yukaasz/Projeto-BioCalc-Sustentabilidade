@@ -11,21 +11,6 @@ O sistema calcula a pegada de carbono e estima créditos de descarbonização (C
 - Gerar gráficos e relatórios automaticamente.
 - Melhorar escalabilidade e manutenção.
 
-## Funcionalidades
-
-### Implementadas
-- Interface web para entrada de dados.
-- Cálculo automático de emissões ACV e CBIOs.
-- Exibição de gráficos via Chart.js.
-- Exportação de relatório em PDF.
-- Estrutura inicial de login e histórico de cálculos.
-
-### Previstas
-- Comparação de cenários.
-- Dashboard completo.
-- Integração com APIs externas.
-- Possível integração com RenovaBio.
-
 ## Arquitetura
 
 ### Frontend
@@ -51,11 +36,11 @@ No terminal, execute:
 
 ### 3. Executar o sistema
 No terminal, execute:
-`python app.py`
+`python run.py`
 
 ### 4. Acessar
-Abra o navegador neste endereço:
-`http://127.0.0.1:5000`
+Abra o navegador em um destes endereços:
+`http://127.0.0.1:5001` ou `http://192.168.0.3:5001`
 
-### Encerrar
+### 5. Encerrar
 Para encerrar o servidor, pressione `Ctrl + C` no terminal.

@@ -1,22 +1,29 @@
-"""
-database.py - Configuração do banco de dados
-"""
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 from datetime import datetime
 import json
 
 db = SQLAlchemy()
 
-class Calculo(db.Model):
-    """Modelo para armazenar cálculos"""
+# UserMixin adiciona métodos padrões (is_authenticated, etc)
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    usuario = db.Column(db.String(100), default='Visitante')
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    nome = db.Column(db.String(100))
+    # Relacionamento: Um usuário tem muitos cálculos
+    calculos = db.relationship('Calculo', backref='owner', lazy=True)
+
+class Calculo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.DateTime, default=datetime.utcnow)
-    # Armazenaremos os JSONs como TEXT para compatibilidade com SQLite
-    dados_entrada = db.Column(db.Text) 
+    dados_entrada = db.Column(db.Text)
     resultados = db.Column(db.Text)
     metodo_acv = db.Column(db.String(50))
     biomassa = db.Column(db.String(100))
+    
+    # Chave estrangeira ligando ao usuário (pode ser nulo se for visitante)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     
     def to_dict(self):
         return {
@@ -28,9 +35,7 @@ class Calculo(db.Model):
         }
 
 def init_db(app):
-    """Inicializa o banco de dados"""
     db.init_app(app)
     with app.app_context():
-        # Cria as tabelas se não existirem
         db.create_all()
     return db

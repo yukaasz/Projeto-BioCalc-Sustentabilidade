@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
+    <div style="position: absolute; top: 20px; right: 20px; font-size: 0.9rem;">
+        <span>Olá, <strong>{{ user.nome }}</strong>!</span>
+        | <a href="/historico" style="color: #2e7d32; text-decoration: none;">Meus Cálculos</a>
+        | <a href="/logout" style="color: #c62828; text-decoration: none;">Sair (Logout)</a>
+    </div>
     <div class="container container-wide">
         <div class="header-logo">
             <h1>🌿 BioCalc - Modo Espelho Planilha</h1>

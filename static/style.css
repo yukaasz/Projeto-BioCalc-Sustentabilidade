@@ -26,7 +26,7 @@ body {
 .container {
     background-color: #ffffff;
     width: 100%;
-    max-width: 500px; /* Largura padrão para o formulário */
+    max-width: 1000px; /* Largura padrão para o formulário */
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Sombra suave */
@@ -427,4 +427,42 @@ input:disabled, select:disabled {
 
 .radio-group input[type="radio"] {
     width: auto;
+}
+
+@media print {
+    /* Esconde elementos de navegação e botões */
+    .form-actions, .no-print, .footer-nav, .tab-button, .progress-bar, a[href="/"] {
+        display: none !important;
+    }
+    
+    /* Configura o corpo para fundo branco e remove centralização flexbox */
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background: white;
+        display: block; /* Importante para não quebrar a página */
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Remove sombras e limites de largura do container */
+    .container, .container-wide {
+        width: 100% !important;
+        max-width: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none;
+    }
+    
+    /* Evita quebras de página no meio de cards ou tabelas */
+    .result-card, table, canvas, .form-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* Garante que os gráficos fiquem lado a lado na impressão se houver espaço */
+    div[style*="display: flex"] {
+        display: flex !important;
+    }
 }

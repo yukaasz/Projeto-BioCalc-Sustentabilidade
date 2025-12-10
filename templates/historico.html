@@ -3,50 +3,111 @@
 <head>
     <title>Histórico - BioCalc</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='chart.js') }}"></script>
 </head>
 <body>
+    <div style="position: absolute; top: 20px; right: 20px; font-size: 0.9rem;">
+        <span>Olá, <strong>{{ user.nome }}</strong>!</span>
+        | <a href="/calculadora" style="color: #2e7d32; text-decoration: none;">🧮 Novo Cálculo</a>
+        | <a href="/logout" style="color: #c62828; text-decoration: none;">Sair</a>
+    </div>
+
     <div class="container container-wide">
         <div class="header-logo">
-            <h1>Histórico de Cálculos</h1>
+            <h1>📋 Meus Cálculos</h1>
             {% if calculos %}
-            <div class="subtitle">Total: {{ total }} cálculos</div>
+            <div class="subtitle">Você possui {{ calculos|length }} cálculos salvos.</div>
             {% endif %}
         </div>
         
         {% if calculos %}
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Data</th>
-                    <th>Biomassa</th>
-                    <th>Método</th>
-                    <th>Intensidade</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for calc in calculos %}
-                <tr>
-                    <td>#{{ calc.id }}</td>
-                    <td>{{ calc.data.strftime('%d/%m/%Y') }}</td>
-                    <td>{{ calc.biomassa.replace('_', ' ').title() if calc.biomassa else 'N/A' }}</td>
-                    <td>{{ calc.metodo_acv }}</td>
-                    <td>
-                        {% set resultados = calc.resultados|from_json %}
-                        {{ resultados.get('intensidade_carbono_g', 'N/A') }} gCO₂eq/MJ
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+        {% set dados_grafico = [] %}
+        {% for calc in calculos %}
+            {% set res = calc.resultados|from_json %}
+            {% if res.intensidade_total_g_co2eq_mj is defined %}
+                {% set _ = dados_grafico.append({
+                    'data': calc.data.strftime('%Y-%m-%d'),
+                    'intensidade_carbono': res.intensidade_total_g_co2eq_mj
+                }) %}
+            {% endif %}
+        {% endfor %}
+
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Biomassa</th>
+                        <th>Intensidade (gCO₂/MJ)</th>
+                        <th>CBIOs</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for calc in calculos %}
+                    <tr>
+                        <td>{{ calc.data.strftime('%d/%m/%Y') }}</td>
+                        
+                        <td style="text-transform: capitalize;">
+                            {{ calc.biomassa.replace('_', ' ') if calc.biomassa else 'N/A' }}
+                        </td>
+                        
+                        <td>
+                            {% set res = calc.resultados|from_json %}
+                            
+                            {% if res.intensidade_total_g_co2eq_mj is defined %}
+                                <span style="font-weight: bold; color: {{ '#2e7d32' if res.intensidade_total_g_co2eq_mj < 86.7 else '#c62828' }}">
+                                    {{ "%.2f"|format(res.intensidade_total_g_co2eq_mj) }}
+                                </span>
+                            {% else %}
+                                <span style="color: #999;">Erro dados</span>
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {% if res.cbios is defined %}
+                                <strong>{{ res.cbios }}</strong>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            <a href="{{ url_for('detalhes', id=calc.id) }}" 
+                               class="btn-outline" 
+                               style="padding: 5px 10px; font-size: 0.8rem; text-decoration: none; cursor: pointer;">
+                                👁️ Ver Detalhes
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
-        <p style="text-align: center; padding: 40px; color: #666;">
-            Nenhum cálculo encontrado no histórico.
-        </p>
+        <div style="text-align: center; padding: 50px; color: #666; background: #f9f9f9; border-radius: 8px;">
+            <h3>Nenhum cálculo encontrado 😕</h3>
+            <p>Faça seu primeiro cálculo de ACV agora mesmo!</p>
+            <a href="/calculadora" class="btn-primary" style="display: inline-block; width: auto; margin-top: 15px;">Ir para Calculadora</a>
+        </div>
         {% endif %}
-        
-        <div class="footer-nav">
-            <a href="/">← Voltar para o cálculo</a>
+
+        <div style="background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            margin-bottom: 30px; 
+            max-width: 1000px; 
+            margin-left: auto; 
+            margin-right: auto;">
+            <div style="height: 350px;">
+                <canvas id="graficoEvolucao" 
+                        data-grafico="historico" 
+                        data-historico='{{ dados_grafico | tojson }}'>
+                </canvas>
+            </div>
         </div>
     </div>
 </body>
