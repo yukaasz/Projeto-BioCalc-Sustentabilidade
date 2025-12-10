@@ -39,8 +39,9 @@ No terminal, execute:
 `python run.py`
 
 ### 4. Acessar
-Abra o navegador em um destes endereços:
-`http://127.0.0.1:5001` ou `http://192.168.0.3:5001`
+Abra o navegador no endereço
+`http://192.168.0.3:5001`
+Ou no endereço que a interface recomendar após ligamento do servidor
 
 ### 5. Encerrar
 Para encerrar o servidor, pressione `Ctrl + C` no terminal.

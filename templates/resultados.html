@@ -17,7 +17,7 @@
             <div class="result-card" style="flex: 1; text-align: center;">
                 <h3>Intensidade de Carbono</h3>
                 <div style="font-size: 2.5em; color: #27ae60; font-weight: bold;">
-                    {{ "%.2f"|format(resultados.intensidade_total_g_co2eq_mj) }}
+                    {{ "%.4f"|format(resultados.intensidade_total_g_co2eq_mj) }}
                 </div>
                 <div style="color: #666;">gCO₂eq / MJ</div>
             </div>
@@ -25,7 +25,7 @@
             <div class="result-card" style="flex: 1; text-align: center; border-left-color: #f39c12;">
                 <h3>CBIOs Gerados</h3>
                 <div style="font-size: 2.5em; color: #f39c12; font-weight: bold;">
-                    {{ resultados.cbios }}
+                    {{ "%.4f"|format(resultados.cbios) }}
                 </div>
                 <div style="color: #666;">créditos estimados</div>
             </div>
@@ -33,7 +33,7 @@
             <div class="result-card" style="flex: 1; text-align: center; border-left-color: #2980b9;">
                 <h3>Nota de Eficiência</h3>
                 <div style="font-size: 2.5em; color: #2980b9; font-weight: bold;">
-                    {{ "%.2f"|format(resultados.nota_eficiencia) }}
+                    {{ "%.4f"|format(resultados.nota_eficiencia) }}
                 </div>
                 <div style="color: #666;">gCO₂eq / MJ (Redução)</div>
             </div>
@@ -80,8 +80,10 @@
             <button onclick="window.print()" class="btn-outline" style="border-color: #d32f2f; color: #d32f2f; cursor: pointer;">
                 📄 Baixar PDF / Imprimir
             </button>
-            <a href="/historico" class="btn-primary">Ver Histórico</a>
+            <a href="/historico" class="btn-outline">Ver Histórico</a>
         </div>
+
+        <br><br>
 
         <div style="flex: 1;">
             <h3>Comparação de Intensidade de Carbono</h3>
@@ -91,6 +93,8 @@
                     data-metodo="Padrao">
             </canvas>
         </div>
+
+        <br><br>
 
         <div style="flex: 1;">
             <h3>Distribuição de Impacto</h3>

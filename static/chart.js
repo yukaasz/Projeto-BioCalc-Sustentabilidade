@@ -215,6 +215,7 @@ function criarGraficoHistorico(canvasElement, historico) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: true,

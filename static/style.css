@@ -1,5 +1,3 @@
-/* style.css - Tema "Clean Card" (Igual às imagens) */
-
 :root {
     --primary-green: #2e7d32;     /* Verde escuro do botão/títulos */
     --light-green-bg: #e8f5e9;    /* Fundo verde claro do resultado */
@@ -15,10 +13,10 @@ body {
     background-color: var(--bg-page);
     color: #333;
     margin: 0;
-    padding: 20px;       /* Pode reduzir o padding se quiser */
+    padding: 20px;       
     display: flex;
     justify-content: center;
-    align-items: center;  /* <--- ADICIONE ESTA LINHA */
+    align-items: center;  
     min-height: 100vh;
 }
 
@@ -114,7 +112,7 @@ button.btn-primary:hover {
 /* --- Página de Resultados (Layout Lado a Lado) --- */
 .results-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+    grid-template-columns: 1fr 1fr; 
     gap: 30px;
     margin-top: 20px;
     align-items: start;
@@ -210,7 +208,7 @@ tr:last-child td { border-bottom: none; }
 
 /* Responsividade (Celular) */
 @media (max-width: 700px) {
-    .results-grid { grid-template-columns: 1fr; } /* Vira uma coluna só no celular */
+    .results-grid { grid-template-columns: 1fr; }
     .container, .container-wide { padding: 20px; }
 }
 
@@ -429,6 +427,19 @@ input:disabled, select:disabled {
     width: auto;
 }
 
+.chart-wrapper-centered {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Lógica de Centralização */
+    width: 100%;
+    max-width: 1000px; /* Largura máxima do gráfico */
+    margin: 30px auto; /* 30px em cima/baixo, AUTO nas laterais (centraliza) */
+    display: block;    /* Garante comportamento de bloco */
+}
+
 @media print {
     /* Esconde elementos de navegação e botões */
     .form-actions, .no-print, .footer-nav, .tab-button, .progress-bar, a[href="/"] {
@@ -440,7 +451,7 @@ input:disabled, select:disabled {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
         background: white;
-        display: block; /* Importante para não quebrar a página */
+        display: block; 
         margin: 0;
         padding: 0;
     }

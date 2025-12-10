@@ -5,7 +5,7 @@ import json
 
 db = SQLAlchemy()
 
-# UserMixin adiciona métodos padrões (is_authenticated, etc)
+# UserMixin adiciona métodos padrões
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
