@@ -1,6 +1,3 @@
-"""
-calculos.py - Motor calibrado com base no print da planilha Excel (image_316200.png)
-"""
 import math
 
 # --- 1. FATORES CALIBRADOS (Engenharia Reversa do Excel) ---
@@ -50,93 +47,93 @@ FATORES_MUT = {
 }
 
 EMISSAO_PINUS_IMPACTO_MUT = {
-    'Acre' : 0,
-    'Alagoas' : 0,
-    'Amapá' : 0.00772,
-    'Amazonas' : 0,
-    'Bahia' : -0.00059,
-    'Ceará' : 0,
-    'Distrito Federal' : -0.00119,
-    'Espírito Santo' : -0.00034,
-    'Goiás' : -0.00209,
-    'Maranhão' : 0.00873,
-    'Mato Grosso' : -0.00229,
-    'Mato Grosso do Sul' : -0.00265,
-    'Minas Gerais' : 0.00038,
-    'Pará' : 0.01223,
-    'Paraíba' : -0.00443,
-    'Paraná' : 0.00001,
-    'Pernambuco' : -0.00406,
-    'Piauí' : -0.00145,
-    'Rio de Janeiro' : 0.00379,
-    'Rio Grande do Norte' : 0,
-    'Rio Grande do Sul' : 0.0005,
-    'Rondônia' : 0.01579,
-    'Roraima' : 0.01118,
-    'Santa Catarina' : 0.00147,
-    'São Paulo' : -0.00048,
-    'Sergipe' : -0.00309,
-    'Tocantins' : 0.00916
+    'Acre': 0,
+    'Alagoas': 0,
+    'Amapá': 7.72,
+    'Amazonas': 0,
+    'Bahia': -0.59,
+    'Ceará': 0,
+    'Distrito Federal': -1.19,
+    'Espírito Santo': -0.34,
+    'Goiás': -2.09,
+    'Maranhão': 8.73,
+    'Mato Grosso': -2.29,
+    'Mato Grosso do Sul': -2.65,
+    'Minas Gerais': 0.38,
+    'Pará': 12.23,
+    'Paraíba': -4.43,
+    'Paraná': 0.01,
+    'Pernambuco': -4.06,
+    'Piauí': -1.45,
+    'Rio de Janeiro': 3.79,
+    'Rio Grande do Norte': 0,
+    'Rio Grande do Sul': 0.5,
+    'Rondônia': 15.79,
+    'Roraima': 11.18,
+    'Santa Catarina': 1.47,
+    'São Paulo': -0.48,
+    'Sergipe': -3.09,
+    'Tocantins': 9.16
 }
 
 EMISSAO_EUCALIPTOS_IMPACTO_MUT = {
     'Acre': 0,
     'Alagoas': 0,
-    'Amapá': 0.002619317,
+    'Amapá': 2.619317,
     'Amazonas': 0,
-    'Bahia': -0.000200181,
+    'Bahia': -0.200181,
     'Ceará': 0,
-    'Distrito Federal': -0.000403755,
-    'Espírito Santo': -0.000115359,
-    'Goiás': -0.000709116,
-    'Maranhão': 0.002962,
-    'Mato Grosso': -0.000776974,
-    'Mato Grosso do Sul': -0.000899118,
-    'Minas Gerais': 0.00012893,
-    'Pará': 0.004149514,
-    'Paraíba': -0.001503054,
-    'Paraná': 0.0000033929,
-    'Pernambuco': -0.001377517,
-    'Piauí': -0.00049197,
-    'Rio de Janeiro': 0.001285908,
+    'Distrito Federal': -0.403755,
+    'Espírito Santo': -0.115359,
+    'Goiás': -0.709116,
+    'Maranhão': 2.962,
+    'Mato Grosso': -0.776974,
+    'Mato Grosso do Sul': -0.899118,
+    'Minas Gerais': 0.12893,
+    'Pará': 4.149514,
+    'Paraíba': -1.503054,
+    'Paraná': 0.0033929,
+    'Pernambuco': -1.377517,
+    'Piauí': -0.49197,
+    'Rio de Janeiro': 1.285908,
     'Rio Grande do Norte': 0,
-    'Rio Grande do Sul': 0.000169645,
-    'Rondônia': 0.005357386,
-    'Roraima': 0.00379326,
-    'Santa Catarina': 0.000498756,
-    'São Paulo': -0.000162859,
-    'Sergipe': -0.001048406,
-    'Tocantins': 0.003107895
+    'Rio Grande do Sul': 0.169645,
+    'Rondônia': 5.357386,
+    'Roraima': 3.79326,
+    'Santa Catarina': 0.498756,
+    'São Paulo': -0.162859,
+    'Sergipe': -1.048406,
+    'Tocantins': 3.107895
 }
 
 EMISSAO_AMENDOIM_IMPACTO_MUT = {
-    'Acre': 0.000162114,
+    'Acre': 0.162114,
     'Alagoas': 0,
-    'Amapá': 0.000100129,
+    'Amapá': 0.100129,
     'Amazonas': 0,
     'Bahia': 0,
-    'Ceará': 0.00019549,
-    'Distrito Federal': 0.000148763,
+    'Ceará': 0.19549,
+    'Distrito Federal': 0.148763,
     'Espírito Santo': 0,
-    'Goiás': 0.000400517,
+    'Goiás': 0.400517,
     'Maranhão': 0,
-    'Mato Grosso': 0.000925957,
-    'Mato Grosso do Sul': 0.000243171,
-    'Minas Gerais': 0.000142088,
-    'Pará': 0.000170696,
-    'Paraíba': 0.001592531,
-    'Paraná': 0.00006866,
-    'Pernambuco': 0.000129691,
-    'Piauí': 0.000045773,
-    'Rio de Janeiro': 0.000151624,
+    'Mato Grosso': 0.925957,
+    'Mato Grosso do Sul': 0.243171,
+    'Minas Gerais': 0.142088,
+    'Pará': 0.170696,
+    'Paraíba': 1.592531,
+    'Paraná': 0.06866,
+    'Pernambuco': 0.129691,
+    'Piauí': 0.045773,
+    'Rio de Janeiro': 0.151624,
     'Rio Grande do Norte': 0,
     'Rio Grande do Sul': 0,
-    'Rondônia': 0.000156392,
-    'Roraima': 0.000580749,
+    'Rondônia': 0.156392,
+    'Roraima': 0.580749,
     'Santa Catarina': 0,
-    'São Paulo': 0.000141135,
-    'Sergipe': 0.000173557,
-    'Tocantins': 0.000200258
+    'São Paulo': 0.141135,
+    'Sergipe': 0.173557,
+    'Tocantins': 0.200258
 }
 
 # Dicionário para resíduos
@@ -273,6 +270,7 @@ def calcular_intensidade_carbono(inputs):
     else:
         percentual_alocacao_biomassa = PERCENTUAL_SIMPLES.get(tipo_bio, 0)
 
+
     impacto_mut = poder_calorifico_biomassa * (fator_impacto_mut * percentual_alocacao_biomassa)
 
     # Transporte da biomassa até a planta industrial
@@ -283,14 +281,18 @@ def calcular_intensidade_carbono(inputs):
 
     qtd_media_biomassa_por_veiculo = QTD_BIOMASSA_VEICULO.get(tipo_bio, 0.0)
 
+
     demanda_transporte = distancia_transporte_biomassa_fabrica * qtd_media_biomassa_por_veiculo
 
+
     impacto_transporte_biomassa = demanda_transporte * IMPACTO_TRANSPORTE_BIOMASSA.get(tipo_veiculo_transporte, 0.0)
-    
+
+
     total_agricola = impacto_producao_biomassa + impacto_mut + impacto_transporte_biomassa
 
-    
     ## Fase Industrial
+
+    
 
     emis_elec = (get_float(inputs.get('eletricidade_rede_media_kwh')) * 0.094 + # Usando fator calibrado
                  get_float(inputs.get('eletricidade_biomassa_kwh')) * EMISSAO_ELETRICIDADE['biomassa'])
